@@ -1,0 +1,9 @@
+# Core dependencies
+opencv-python>=4.8.0
+mediapipe>=0.10.0
+numpy>=1.24.0
+PyQt6>=6.5.0
+
+# Optional dependencies for virtual camera
+# Uncomment the following line if you want to use virtual camera functionality
+# pyvirtualcam>=0.9.0
