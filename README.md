@@ -30,14 +30,6 @@ AnonCam - это приложение для анонимизации лиц в 
 pip install -r requirements.txt
 ```
 
-### Быстрая установка (macOS)
-
-Используйте скрипт установки:
-
-```bash
-chmod +x install-macos.sh
-./install-macos.sh
-```
 
 ## Использование
 
