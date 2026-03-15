@@ -28,6 +28,7 @@ from PyQt6.QtWidgets import (
 
 from .engine import AnonEngine
 from .logging_utils import LogWindow, QtLogHandler
+from .metrics import LatencyRecorder
 
 try:
     import pyvirtualcam
@@ -68,6 +69,10 @@ class AnonCamWindow(QMainWindow):
         self.t0 = time.time()
         self.fps_avg = 0.0
         self.vcam = None
+        self.latency = LatencyRecorder(
+            path="latency_last_frames.csv",
+            window=120,
+        )
         self.log_window = None
 
         self.logger = logging.getLogger('anon_cam')
@@ -496,14 +501,21 @@ class AnonCamWindow(QMainWindow):
     def on_timer(self):
         if self.cap is None:
             return
-        ok, frame = self.cap.read()
+        # one-iteration latency measurement for presentation metrics
+        ctx = self.latency.context()
+
+        with ctx.section('read'):
+            ok, frame = self.cap.read()
         if not ok:
             self.logger.warning('Failed to read frame from camera; stopping capture')
             self.stop_camera()
             return
 
-        cfg = self.build_cfg()
-        out, n_faces, disp_mode = self.engine.process(frame, cfg)
+        with ctx.section('build_cfg'):
+            cfg = self.build_cfg()
+
+        with ctx.section('engine'):
+            out, n_faces, disp_mode = self.engine.process(frame, cfg)
 
         frame_to_show = out
         if cfg['grayscale']:
@@ -517,27 +529,32 @@ class AnonCamWindow(QMainWindow):
         self.fps_avg = self.fps_avg * 0.9 + fps * 0.1 if self.fps_avg > 0 else fps
         self.t0 = time.time()
 
-        fh, fw = frame_to_show.shape[:2]
-        lw, lh = self.video.width(), self.video.height()
-        if lw > 0 and lh > 0:
-            scale = min(lw / fw, lh / fh)
-            nw, nh = int(fw * scale), int(fh * scale)
-            nw, nh = max(1, nw), max(1, nh)
-            scaled = cv2.resize(
-                frame_to_show, (nw, nh), interpolation=cv2.INTER_LINEAR
-            )
+        with ctx.section('ui'):
+            fh, fw = frame_to_show.shape[:2]
+            lw, lh = self.video.width(), self.video.height()
+            if lw > 0 and lh > 0:
+                scale = min(lw / fw, lh / fh)
+                nw, nh = int(fw * scale), int(fh * scale)
+                nw, nh = max(1, nw), max(1, nh)
+                scaled = cv2.resize(
+                    frame_to_show, (nw, nh), interpolation=cv2.INTER_LINEAR
+                )
+                qimg_src = scaled
+            else:
+                qimg_src = frame_to_show
+            fh, fw = qimg_src.shape[:2]
             qimg = QImage(
-                scaled.data, nw, nh, nw * frame_to_show.shape[2],
+                qimg_src.data, fw, fh, fw * qimg_src.shape[2],
                 QImage.Format.Format_BGR888,
             ).copy()
-        else:
-            qimg = QImage(
-                frame_to_show.data, fw, fh, fw * frame_to_show.shape[2],
-                QImage.Format.Format_BGR888,
-            ).copy()
-        self.video.setPixmap(QPixmap.fromImage(qimg))
+            self.video.setPixmap(QPixmap.fromImage(qimg))
 
-        txt = f"mode:{disp_mode} strength:{cfg['strength']} feather:{cfg['feather']} faces:{n_faces} FPS:{self.fps_avg:.1f}"
+        ctx.finalize(fps_inst=fps, fps_avg=self.fps_avg)
+
+        txt = (
+            f"mode:{disp_mode} strength:{cfg['strength']} feather:{cfg['feather']} "
+            f"faces:{n_faces} FPS:{self.fps_avg:.1f}"
+        )
         self.hud.setText(txt)
 
         if cfg['vcam_enabled']:
