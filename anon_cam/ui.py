@@ -52,7 +52,7 @@ def enumerate_cameras(max_index=10):
             if names and i < len(names):
                 label = names[len(names) - 1 - i]
             else:
-                label = f'Камера {i}'
+                label = f'Camera {i}'
             result.append((i, label))
     return result
 
@@ -89,10 +89,10 @@ class AnonCamWindow(QMainWindow):
         modes_row = QHBoxLayout()
         self.mode_buttons = {}
         for name, label in [
-            ('auto', 'Авто'),
-            ('faces', 'Лица'),
-            ('all', 'Все'),
-            ('none', 'Нет')
+            ('auto', 'Auto'),
+            ('faces', 'Faces'),
+            ('all', 'All'),
+            ('none', 'None')
         ]:
             btn = QRadioButton(label)
             self.mode_group.addButton(btn)
@@ -151,12 +151,12 @@ class AnonCamWindow(QMainWindow):
         self.vcam_checkbox = QCheckBox()
         if pyvirtualcam is None:
             self.vcam_checkbox.setEnabled(False)
-            self.vcam_checkbox.setToolTip('Требуется пакет pyvirtualcam')
+            self.vcam_checkbox.setToolTip('Requires the pyvirtualcam package')
 
-        self.btn_start = QPushButton('Старт')
-        self.btn_stop = QPushButton('Стоп')
-        self.btn_logs = QPushButton('Логи')
-        self.btn_reset = QPushButton('Сброс настроек')
+        self.btn_start = QPushButton('Start')
+        self.btn_stop = QPushButton('Stop')
+        self.btn_logs = QPushButton('Logs')
+        self.btn_reset = QPushButton('Reset settings')
 
         button_style = (
             "QPushButton {"
@@ -192,47 +192,47 @@ class AnonCamWindow(QMainWindow):
             f.setLabelAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
             f.setHorizontalSpacing(20)
 
-        gb_source = QGroupBox('Источник')
+        gb_source = QGroupBox('Source')
         f_source = QFormLayout()
-        f_source.addRow('Камера', self.device_combo)
+        f_source.addRow('Camera', self.device_combo)
         style_form(f_source)
         gb_source.setLayout(f_source)
 
-        gb_mode = QGroupBox('Режим')
+        gb_mode = QGroupBox('Mode')
         f_mode = QFormLayout()
         f_mode.addRow(modes_wrap)
         style_form(f_mode)
         gb_mode.setLayout(f_mode)
 
-        gb_anon = QGroupBox('Анонимизация')
+        gb_anon = QGroupBox('Anonymization')
         f_anon = QFormLayout()
-        f_anon.addRow('Сила', self.strength)
-        f_anon.addRow('Перо', self.feather)
-        f_anon.addRow('Увеличение маски (%)', self.expand)
-        f_anon.addRow('Только крупнейшее', self.only_largest)
+        f_anon.addRow('Strength', self.strength)
+        f_anon.addRow('Feather', self.feather)
+        f_anon.addRow('Mask expansion (%)', self.expand)
+        f_anon.addRow('Only the largest', self.only_largest)
         style_form(f_anon)
         gb_anon.setLayout(f_anon)
 
-        gb_det = QGroupBox('Детекция')
+        gb_det = QGroupBox('Detection')
         f_det = QFormLayout()
-        f_det.addRow('Порог детекции (%)', self.conf)
-        f_det.addRow('Det every (кадры)', self.det_every)
+        f_det.addRow('Detection threshold (%)', self.conf)
+        f_det.addRow('Det every (frames)', self.det_every)
         f_det.addRow('Det width (px)', self.det_width)
         style_form(f_det)
         gb_det.setLayout(f_det)
 
-        gb_behavior = QGroupBox('Поведение')
+        gb_behavior = QGroupBox('Behavior')
         f_behavior = QFormLayout()
-        f_behavior.addRow('Miss thresh (кадры)', self.miss_thresh)
+        f_behavior.addRow('Miss thresh (frames)', self.miss_thresh)
         f_behavior.addRow('Recover frames', self.recover_frames)
         style_form(f_behavior)
         gb_behavior.setLayout(f_behavior)
 
-        gb_output = QGroupBox('Вывод')
+        gb_output = QGroupBox('Output')
         f_output = QFormLayout()
-        f_output.addRow('Ч/Б вывод', self.grayscale)
-        f_output.addRow('Зеркалить изображение', self.mirror)
-        f_output.addRow('Вывод в виртуальную камеру', self.vcam_checkbox)
+        f_output.addRow('B/W output', self.grayscale)
+        f_output.addRow('Mirror image', self.mirror)
+        f_output.addRow('Virtual camera output', self.vcam_checkbox)
         style_form(f_output)
         gb_output.setLayout(f_output)
 
@@ -404,7 +404,7 @@ class AnonCamWindow(QMainWindow):
             if i >= 0:
                 self.device_combo.setCurrentIndex(i)
         if self.device_combo.count() == 0:
-            self.device_combo.addItem('Нет камер', -1)
+            self.device_combo.addItem('No cameras', -1)
 
     def on_device_changed(self):
         if self.cap is not None:

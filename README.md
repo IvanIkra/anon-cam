@@ -1,142 +1,141 @@
 # AnonCam
 
-AnonCam - это приложение для анонимизации лиц в реальном времени с использованием веб-камеры. Приложение использует компьютерное зрение для обнаружения лиц и применяет различные методы анонимизации для защиты приватности.
+AnonCam is a real-time face anonymization application using a webcam. The application uses computer vision to detect faces and applies various anonymization methods to protect privacy.
 
-## Возможности
+## Features
 
-- **Обнаружение лиц в реальном времени** - использует MediaPipe для точного обнаружения лиц
-- **Множественные режимы анонимизации**:
-  - **Авто** - автоматически переключается между режимами в зависимости от наличия лиц
-  - **Лица** - анонимизирует только обнаруженные лица
-  - **Все** - применяет анонимизацию ко всему кадру
-  - **Нет** - отключает анонимизацию
-- **Настраиваемая сила анонимизации** - от 1 до 10 уровней
-- **Плавные переходы** - настраиваемое размытие краев масок
-- **Виртуальная камера** - вывод в виртуальную камеру для использования в других приложениях
-- **Черно-белый режим** - опциональный монохромный вывод
-- **Детальная настройка** - множество параметров для точной настройки
+- **Real-time face detection** - uses MediaPipe for accurate face detection
+- **Multiple anonymization modes**:
+  - **Auto** - automatically switches between modes depending on whether faces are present
+  - **Faces** - anonymizes only detected faces
+  - **All** - applies anonymization to the entire frame
+  - **None** - disables anonymization
+- **Configurable anonymization strength** - from 1 to 10 levels
+- **Smooth transitions** - adjustable blur of mask edges
+- **Virtual camera** - outputs to a virtual camera for use in other applications
+- **Black-and-white mode** - optional monochrome output
+- **Detailed tuning** - many parameters for fine control
 
-## Установка
+## Installation
 
-### Требования
+### Requirements
 
 - Python 3.8+
-- macOS (тестировалось на macOS)
-- Веб-камера
+- macOS (tested on macOS)
+- Webcam
 
-### Установка зависимостей
+### Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
+## Usage
 
-## Использование
-
-### Запуск приложения
+### Start the application
 
 ```bash
 python anon_cam.py
 ```
 
-### Основные настройки
+### Main settings
 
-- **Режим**: Выберите режим анонимизации
-- **Сила**: Уровень анонимизации (1-10)
-- **Перо**: Размытие краев масок (0-60)
-- **Только крупнейшее**: Анонимизировать только самое большое лицо
-- **Порог детекции**: Чувствительность обнаружения лиц (0-100%)
-- **Ч/Б вывод**: Черно-белый режим
+- **Mode**: Choose the anonymization mode
+- **Strength**: Anonymization level (1-10)
+- **Feather**: Blur for mask edges (0-60)
+- **Only the largest**: Anonymize only the largest face
+- **Detection threshold**: Face detection sensitivity (0-100%)
+- **B/W output**: Black-and-white mode
 
-### Дополнительные настройки
+### Advanced settings
 
-- **Miss thresh**: Количество кадров без лиц для переключения режима
-- **Recover frames**: Количество кадров для восстановления режима
-- **Det every**: Частота обнаружения лиц (каждый N-й кадр)
-- **Det width**: Ширина кадра для обнаружения (160-960px)
-- **Увеличение маски**: Расширение области анонимизации (0-100%)
+- **Miss thresh**: Number of frames without faces to switch modes
+- **Recover frames**: Number of frames to restore the mode
+- **Det every**: Face detection frequency (every N-th frame)
+- **Det width**: Frame width for detection (160-960px)
+- **Mask expansion**: Expands the anonymized area (0-100%)
 
-## Технические детали
+## Technical Details
 
-### Архитектура
+### Architecture
 
-- **`app.py`** - Точка входа приложения
-- **`ui.py`** - PyQt6 интерфейс пользователя
-- **`engine.py`** - Основной движок анонимизации
-- **`detector.py`** - Обнаружение лиц с помощью MediaPipe
-- **`anonymize.py`** - Алгоритмы анонимизации
-- **`logging_utils.py`** - Утилиты логирования
+- **`app.py`** - Application entry point
+- **`ui.py`** - PyQt6 user interface
+- **`engine.py`** - Main anonymization engine
+- **`detector.py`** - Face detection using MediaPipe
+- **`anonymize.py`** - Anonymization algorithms
+- **`logging_utils.py`** - Logging utilities
 
-### Алгоритмы анонимизации
+### Anonymization algorithms
 
-Приложение использует необратимые методы анонимизации:
+The application uses irreversible anonymization methods:
 
-1. **Квантование** - уменьшение количества цветовых уровней
-2. **Добавление шума** - случайный шум для деградации качества
-3. **Блочное перемешивание** - перестановка блоков изображения
-4. **Размытие** - гауссово размытие для сглаживания
+1. **Quantization** - reduces the number of color levels
+2. **Noise addition** - random noise to degrade image quality
+3. **Block shuffling** - permutes image blocks
+4. **Blur** - Gaussian blur for smoothing
 
-### Производительность
+### Performance
 
-- Оптимизированное обнаружение лиц (каждый N-й кадр)
-- Настраиваемое разрешение для обнаружения
-- Кэширование результатов обнаружения
-- Эффективная обработка кадров
+- Optimized face detection (every N-th frame)
+- Configurable detection resolution
+- Caching face detection results
+- Efficient frame processing
 
-## Виртуальная камера
+## Virtual Camera
 
-Для использования виртуальной камеры установите дополнительную зависимость:
+To use a virtual camera, install an additional dependency:
 
 ```bash
 pip install pyvirtualcam
 ```
 
-После установки активируйте опцию "Вывод в виртуальную камеру" в интерфейсе.
+After installation, enable the "Virtual camera output" option in the interface.
 
-## Логирование
+## Logging
 
-Приложение включает встроенную систему логирования:
+The application includes a built-in logging system:
 
-- Нажмите кнопку "Логи" для открытия окна логов
-- Логи отображают информацию о работе обнаружения лиц
-- Переключения между режимами анонимизации
-- Ошибки и предупреждения
+- Click the "Logs" button to open the logs window
+- Logs show face detection activity information
+- Switches between anonymization modes
+- Errors and warnings
 
-## Устранение неполадок
+## Troubleshooting
 
-### Проблемы с камерой
+### Camera issues
 
-- Убедитесь, что камера не используется другими приложениями
-- Проверьте разрешения доступа к камере в настройках системы
+- Make sure the camera is not used by other applications
+- Check camera access permissions in system settings
 
-### Низкая производительность
+### Low performance
 
-- Увеличьте значение "Det every" (реже обнаружение)
-- Уменьшите "Det width" (меньшее разрешение для обнаружения)
-- Уменьшите "Сила" анонимизации
+- Increase "Det every" (detect less often)
+- Decrease "Det width" (lower detection resolution)
+- Decrease the "Strength" of anonymization
 
-### Проблемы с виртуальной камерой
+### Virtual camera issues
 
-- Убедитесь, что установлен пакет `pyvirtualcam`
-- Проверьте, что виртуальная камера не используется другими приложениями
+- Make sure the `pyvirtualcam` package is installed
+- Check that the virtual camera is not used by other applications
 
-## Лицензия
+## License
 
-Этот проект распространяется под лицензией MIT. См. файл LICENSE для подробностей.
+This project is distributed under the MIT license. See the `LICENSE` file for details.
 
-## Вклад в проект
+## Contributing
 
-Мы приветствуем вклад в развитие проекта! Пожалуйста:
+We welcome contributions to the project. Please:
 
-1. Форкните репозиторий
-2. Создайте ветку для новой функции
-3. Внесите изменения
-4. Создайте Pull Request
+1. Fork the repository
+2. Create a branch for a new feature
+3. Make your changes
+4. Open a Pull Request
 
-## Поддержка
+## Support
 
-Если у вас возникли проблемы или вопросы:
+If you have problems or questions:
 
-1. Проверьте раздел "Устранение неполадок"
-2. Создайте Issue в репозитории GitHub
-3. Приложите логи из окна "Логи" приложения
+1. Check the "Troubleshooting" section
+2. Create an Issue in the GitHub repository
+3. Attach logs from the application's "Logs" window
